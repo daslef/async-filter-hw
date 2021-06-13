@@ -86,75 +86,76 @@
             transition: 0s;
         }
     </style>
-</head>
-<body>
-    const getRandomInt = (min, max) => {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
-      
-      const getApiResponse = (searchString) => {
-        return new Promise((resolve) =>
-          setTimeout(() => resolve(searchString), getRandomInt(1, 10) * 500))
-      }
-                           
-      const input = document.querySelector('#input');
-      const responseDiv = document.querySelector('#response-container');
-      const cancelDiv = document.querySelector('#cancel-prev-request-container');
-      const btn = document.querySelector('#button');
-      
-      const { fromEvent, pipe, EMPTY } = rxjs;
-      const { of, map, switchMap, mergeMap, scan, startWith, pairwise } = rxjs.operators;
-      
-      fromEvent(btn, 'click').subscribe(() => {
-        responseDiv.innerHTML = '';
-        cancelDiv.innerHTML = '';
-        input.value = '';
-      });
-      
-      const inputChange$ = fromEvent(input, 'input');
-      
-      // const cancel$ = inputChange$
-      //   .pipe(switchMap(x => {
-      //     return getApiResponse(x.target.value)
-      //   }))
-      
-      // cancel$.subscribe(result => {
-      //   cancelDiv.innerHTML = result
-      // });
-      
-      const longer$ = inputChange$
-        .pipe(
-          mergeMap(x => getApiResponse(x.target.value)),
-          startWith(''),
-          pairwise(),
-          map(([a,b]) => {
-            if (b > a) {
-              return b
-            } else {
-              return EMPTY
-            }
-          })
-        )
-      
-      longer$.subscribe(x => {
-        console.log(x)
-        responseDiv.innerHTML = x
-      });
-            
-</body>
-</html>
-
-
-
-
-<head>
     <script src="https://unpkg.com/rxjs@7.1.0/dist/bundles/rxjs.umd.min.js"></script>
 </head>
 <body>
-<div id="app">
-    <input id="input">
-    <div id="response-container"></div>
-    <div id="cancel-prev-request-container"></div>
-    <button type="button" id="button">Очистить</button>
-</div>
+    <div id="app">
+        <input id="input">
+        <div id="response-container"></div>
+        <div id="cancel-prev-request-container"></div>
+        <button type="button" id="button">Очистить</button>
+    </div>    
+    <script>
+        const getRandomInt = (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        const getApiResponse = (searchString) => {
+        return new Promise((resolve) =>
+            setTimeout(() => resolve(searchString), getRandomInt(1, 10) * 500))
+        }
+                            
+        const input = document.querySelector('#input');
+        const responseDiv = document.querySelector('#response-container');
+        const cancelDiv = document.querySelector('#cancel-prev-request-container');
+        const btn = document.querySelector('#button');
+
+        const { fromEvent, pipe, EMPTY } = rxjs;
+        const { of, map, switchMap, mergeMap, scan, startWith, pairwise } = rxjs.operators;
+
+        function resolveCancelRequest(observable$) {
+        const resolveCancel$ = observable$
+            .pipe(switchMap(x => {
+            return getApiResponse(x.target.value)
+            }))
+
+        resolveCancel$.subscribe(result => {
+            cancelDiv.innerHTML = result
+        });  
+        }
+
+        function resolveRaceCondition(observable$) {
+        const resolveRace$ = inputChange$
+            .pipe(
+            mergeMap(x => getApiResponse(x.target.value)),
+            startWith(''),
+            pairwise(),
+            map(([a,b]) => {
+                if (b > a) {
+                return b
+                } else {
+                return EMPTY
+                }
+            })
+        )
+
+        resolveRace$.subscribe(x => {
+            responseDiv.innerHTML = x
+        });
+        }
+
+        const clicks$ = fromEvent(btn, 'click')
+        const inputChange$ = fromEvent(input, 'input');
+
+        clicks$.subscribe(() => {
+            responseDiv.innerHTML = '';
+            cancelDiv.innerHTML = '';
+            input.value = '';
+        });
+
+        resolveCancelRequest(inputChange$);
+        resolveRaceCondition(inputChange$);
+
+    </script>
 </body>
+</html>

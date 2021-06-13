@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async Filter</title>
+</head>
+<body>
+    <h2>Вариант 10</h2>
+    <p>Реализовать операцию filter для асинхронного массива.</p>
+    <code>
+        function filter(
+           array: AsyncArray,
+            fn: (cur: any, idx: Number, src: AsyncArray) => Boolean,
+            cb: (result: AsyncArray) => void) {
+        }
+    </code>
+    <script src="./async-api.js"></script>
+    <script src="./async-filter.js"></script>
+    <script>
+        const a = new AsyncArray([-1, -2, 3]);
+        const test = (element) => element > 0
+        filter(a, test, (res) => res.print());
+    </script>
+</body>
+</html>

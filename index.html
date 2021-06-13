@@ -7,21 +7,18 @@
     <title>Async Filter</title>
 </head>
 <body>
-    <h2>Вариант 10</h2>
-    <p>Реализовать операцию filter для асинхронного массива.</p>
-    <code>
-        function filter(
-           array: AsyncArray,
-            fn: (cur: any, idx: Number, src: AsyncArray) => Boolean,
-            cb: (result: AsyncArray) => void) {
-        }
-    </code>
-    <script src="./async-api.js"></script>
-    <script src="./async-filter.js"></script>
-    <script>
-        const a = new AsyncArray([-1, -2, 3]);
-        const test = (element) => element > 0
-        filter(a, test, (res) => res.print());
-    </script>
+    <section>
+        <h2>Вариант 10</h2>
+        <p>Реализовать операцию filter для асинхронного массива.</p>
+        <code>
+            function filter(
+               array: AsyncArray,
+                fn: (cur: any, idx: Number, src: AsyncArray) => Boolean,
+                cb: (result: AsyncArray) => void) {
+            }
+        </code>
+        <a href="./async.html">Задание 1</a>
+        <a href="./rxjs.html">Задание 3</a>    
+    </section>
 </body>
 </html>
