@@ -6,4 +6,4 @@ function filter(
   fn: (cur: any, idx: Number, src: AsyncArray) => Boolean,
   cb: (result: AsyncArray) => void) {
 }
-```js
+```
